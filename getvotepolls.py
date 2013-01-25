@@ -53,5 +53,6 @@ if __name__=='__main__':
 
   with open('vote_data.csv', 'wb') as csvfile:
     writer=csv.writer(csvfile, delimiter='\t')
+    writer.writerow('start_date', 'end_date', 'pollster', 'method', 'source', 'subpopulation', 'obama', 'romney', 'other')
     for row in rows:
       writer.writerow(row)
