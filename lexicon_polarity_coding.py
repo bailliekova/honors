@@ -5,6 +5,7 @@ pos_words=[]
 neu_words=[]
 both_words=[]
 
+#create word lists from .tff file
 with open('data/subjclueslen1-HLTEMNLP05.tff', 'r') as wordfile:
   for line in wordfile:
     tokens=line.split()
@@ -21,6 +22,7 @@ with open('data/subjclueslen1-HLTEMNLP05.tff', 'r') as wordfile:
     else:
       print word, polarity
 
+#append sentiment to tweets
 outrows=[]
 with open('tweets.csv', 'r') as tweetfile:
   for tweetrow in tweetfile:
@@ -41,13 +43,13 @@ with open('tweets.csv', 'r') as tweetfile:
     for word in neu_words:
       if word in text:
         outrow.append('true')
-        #make a record that tweet is neutral
         break
     else:
       tweetrow.append('false')
     outrows.append(outrow)
 
-with open('codedtweets.csv', 'wb') as csvfile:
+#write coded tweets to file.
+with open('coded_tweets_lp.csv', 'wb') as csvfile:
   writer=csv.writer(csvfile, delimiter='\t')
   for row in outrows:
     writer.write(row)
