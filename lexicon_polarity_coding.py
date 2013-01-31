@@ -1,4 +1,4 @@
-import csv
+import codecs
 
 neg_words=[]
 pos_words=[]
@@ -26,7 +26,7 @@ with open('data/subjclueslen1-HLTEMNLP05.tff', 'r') as wordfile:
 outrows=[]
 with open('tweets.csv', 'r') as tweetfile:
   for tweetrow in tweetfile:
-    outrow=tweetrow
+    outrow=tweetrow.split('\t')
     for word in pos_words:
       if word in text:
         #make a record that the tweet is positive
@@ -49,7 +49,9 @@ with open('tweets.csv', 'r') as tweetfile:
     outrows.append(outrow)
 
 #write coded tweets to file.
-with open('coded_tweets_lp.csv', 'wb') as csvfile:
-  writer=csv.writer(csvfile, delimiter='\t')
+with codecs.open('coded_tweets_lp.csv', 'wb', encoding='utf-8') as outfile:
   for row in outrows:
-    writer.write(row)
+    outfile.write('\t'.join([unicode(x) for x in row])
+    outfile.write('\n')
+    outfile.flush()
+  
