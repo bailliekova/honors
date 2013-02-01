@@ -33,11 +33,15 @@ with open('data/subjclueslen1-HLTEMNLP05.tff', 'r') as wordfile:
 
 print "Processing tweets..."
 outrows=[]
-with open(tweetfile_name, 'r') as tweetfile:
+i=0
+with codecs.open(tweetfile_name, 'r', encoding='utf-8') as tweetfile:
   for tweetrow in tweetfile:
     outrow=tweetrow.split('\t')
     text=outrow[0]
-    date=outrow[7]
+    try:
+      date=outrow[7]
+    except IndexError:
+      continue
     if date not in sentiment_dict:
       sentiment_dict[date]=make_sentiment_dict()
     for word in pos_words:
@@ -62,10 +66,13 @@ with open(tweetfile_name, 'r') as tweetfile:
     else:
       outrow.append('false')
     outrows.append(outrow)
+    i+=1
+    if i%1000==0:
+      print "processed %s so far" % (i,)
 
 #write coded tweets to file.
 print "writing coded tweets to file"
-outfile_name=infile_name.partition('.')[0]+'_coded.csv'
+outfile_name=tweetfile_name.partition('.')[0]+'_coded.csv'
 with codecs.open(outfile_name, 'w', encoding='utf-8') as outfile:
   for row in outrows:
     outfile.write('\t'.join([unicode(x) for x in row]))
@@ -75,7 +82,7 @@ with codecs.open(outfile_name, 'w', encoding='utf-8') as outfile:
 #write daily dictionary to file 
 
 "writing daily summmary file...."
-summaryfile_name=infile_name.partition('.')[0]+'_daily.csv'
+summaryfile_name=tweetfile_name.partition('.')[0]+'_daily.csv'
 with open(summaryfile_name, 'wb') as summaryfile:
   csvwriter=csv.writer(summaryfile, delimiter='\t')
   for date in sentiment_dict:
