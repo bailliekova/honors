@@ -1,3 +1,4 @@
+startdate 	enddate 	pollster 	method	 url 	universe 	favorable 	unfavorable 	other
 2012-11-06	2012-11-07	GQR (D)	Phone	http://www.democracycorps.com/Economy-Project/engaging-the-big-economic-issues-ahead/	Likely Voters	0.51	0.41	0
 2012-11-03	2012-11-05	YouGov/Economist	Internet	http://cdn.yougov.com/cumulus_uploads/document/6pkdh10fns/econToplines.pdf	Adults	0.51	0.46	0.02
 2012-11-02	2012-11-04	PPP (D-Americans United for Change)	Automated Phone	http://www.publicpolicypolling.com/pdf/2011/PPP_Release_TrackingPoll_113.pdf	Likely Voters	0.5	0.47	0.03

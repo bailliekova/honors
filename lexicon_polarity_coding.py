@@ -82,7 +82,7 @@ with codecs.open(outfile_name, 'w', encoding='utf-8') as outfile:
 #write daily dictionary to file 
 
 "writing daily summmary file...."
-summaryfile_name=tweetfile_name.partition('.')[0]+'_daily.csv'
+summaryfile_name=outfile_name.partition('.')[0]+'_daily.csv'
 with open(summaryfile_name, 'wb') as summaryfile:
   csvwriter=csv.writer(summaryfile, delimiter='\t')
   for date in sentiment_dict:
