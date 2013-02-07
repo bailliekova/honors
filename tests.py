@@ -11,8 +11,8 @@ class PreprocessingTest(unittest.TestCase):
 		
 	def test_process_tweets(self):
 		self.assertEqual(process_tweet(self.tweet), 'this is a tweet with a URL and USER and a hashtag')
-		self.assertEqual(process_tweet(self.tweet2), 'this tweet has a different url format: URL')
-		self.assertEqual(process_tweet(self.tweet3), 'this tweet has yet another format for urls: i love URL')
+		self.assertEqual(process_tweet(self.tweet2), 'this tweet has a different url format URL')
+		self.assertEqual(process_tweet(self.tweet3), 'this tweet has yet another format for urls i love URL')
 		self.assertEqual(process_tweet(self.tweet4), 'this tweet is in uppercase')
 
 if __name__ == '__main__':
