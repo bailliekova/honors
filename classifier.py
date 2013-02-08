@@ -25,10 +25,13 @@ def process_tweet(tweet, exclude_emoticons=False):
 
 class Classifier:
 	def __init__(self, stopwords=None):
-		self.stopwords=stopwords
-		self.feature_list=[]
+		if not stopwords:
+			self.stopwords=[]
+		else:
+			self.stopwords=stopwords
 		stopwords.append('USER').append('URL')
-		self.classifier=None
+		self.feature_list=[]
+		self.classifier=None 
 
 	def train_model(self, training_set):
 		random.shuffle(training_set)
@@ -59,4 +62,5 @@ if __name__ == '__main__':
 		training_set=[tuple(line[0], line[1]) for line in trainingsetfile]
 	NBC=Classifier()
 	NBC.train_model(training_set)
-	NBC.classify("Obama sucks. #Nobama")
+	print NBC.classify("Obama sucks. #Nobama")
+	
