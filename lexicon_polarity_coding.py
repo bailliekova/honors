@@ -17,7 +17,7 @@ sentiment_dict=dict()
 print "Creating lexicon..."
 with open('data/subjclueslen1-HLTEMNLP05.tff', 'r') as wordfile:
   for line in wordfile:
-    tokens=line.split()
+    tokens=line.strip().split()
     word=tokens[2].partition('=')[2]
     polarity=tokens[-1].partition('=')[2]
     if 'neg' in polarity:
