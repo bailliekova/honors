@@ -1,4 +1,6 @@
 *.gz
 *.csv
 *.pyc
+*.Rdata
+*.Rhistory
 Schema.ini*
