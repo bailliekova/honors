@@ -1,3 +1,4 @@
+#TODO: Learn R
 # my script
 setwd("C:\\Users\\Anna\\Projects\\honors")
 require(zoo)
@@ -13,5 +14,15 @@ polldata[1]=as.Date(polldata[,1], format='%Y-%m-%d')
 polldata[2]=as.Date(polldata[,2], format='%Y-%m-%d')
 sentimentdata[1]=as.Date(sentimentdata[,1], format='%Y-%m-%d')
 
-#TODO: join data and find correlations, perhaps using zoo and lag functions(?) 
-#TODO: Learn R
+#merge into one data set, matching poll enddate with sentiment date, keeping all values from sentiment
+m=merge(polldata, sentimentdata, by.x="enddate", by.y="date", all=TRUE)
+cor(m$sentiment, m$positive-m$negative)
+cor(m$favorable, m$positive)
+cor(m$unfavorable, m$negative)
+
+#compute moving average of sentiment data
+m$sentiment_ma=rollmean(m$sentiment, 3)
+
+#TODO: using zoo and lag functions(?) 
+#iterate through lags, calculating correlation coefficient, storing in a new dataframe to plot later.
+
