@@ -3,10 +3,10 @@ from itertools import chain
 from nltk import word_tokenize, sent_tokenize
 import random
 from nltk.classify.util import apply_features
-from nltk import NaiveBayesClassifier
+from nltk import NaiveBayesClassifier#, MaxentClassifer
 # classifier shell for processing tweets
 
-emoticonre=re.compile(r'[;:B]-?[)(PpD\[\]){}]', re.UNICODE)
+emoticonre=re.compile(r'[;:B]-?[)\(PpD\[\]{}]', re.UNICODE)
 
 def process_tweet(tweet, exclude_emoticons=False):
 	tweet=tweet.lower()
@@ -35,7 +35,7 @@ class Classifier:
 
 	def train_model(self, training_set):
 		random.shuffle(training_set)
-		feature_list=set(chain([word_tokenize(process_tweet(tweet) for tweet, sentiment in training_set]))			
+		feature_list=set(chain([word_tokenize(process_tweet(tweet)) for tweet, sentiment in training_set]))			
 		self.featurelist=[feature for feature in featurelist if feature not in self.stopwords]
 		ts=nltk.classify.util.apply_features(extract_features, training_set)
 		self.classifier=NaiveBayesClassifier.train(ts)

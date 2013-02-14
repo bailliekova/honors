@@ -12,15 +12,15 @@ if __name__ == '__main__':
 	with codecs.open(infilename, 'r', encoding='UTF-8') as infile:
 		for line in infile:
 			text=line.split('\t')[0]
-			m=posre.match(text)
+			m=posre.search(text)
 			if m:
 				trainingset.append((text, 'positive'))
 				try:
 					print text, 'positive'
 				except UnicodeError:
 					pass
-			m=negre.match(text)
-			if m:
+			m2=negre.search(text)
+			if m2:
 				trainingset.append((text, 'negative'))
 				try:
 					print text, 'negative'
