@@ -3,4 +3,6 @@
 *.pyc
 *.Rdata
 *.Rhistory
+RGraphic.pdf
+*.pkl
 Schema.ini*
