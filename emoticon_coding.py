@@ -1,10 +1,9 @@
 #script to grab emoticon data
 import codecs
-import sys
-import os
-import re
+import sys, os, re, random
 import cPickle as pickle
 from classifier import *
+import nltk
 
 def create_training_set():
 	infilename=sys.argv[1]
@@ -20,26 +19,24 @@ def create_training_set():
 			m2=negre.search(text)
 			if m2:
 				trainingset.append((text, 'negative'))
-			#if m1 or m2:
-				# try:
-				# 	print text, 'negative'
-				# except UnicodeError:
-				# 	continue
 	print len(trainingset)
 	with open('emoticon_training_set.pkl', 'w') as picklefile:
 		pickle.dump(trainingset, picklefile)
 	return trainingset
 
+
 if __name__ == '__main__':
-	print 'creating training set...'
-	if os.path.exists("emoticon_training_set.pkl"):
-		training_set=pickle.load(open('emoticon_training_set.pkl'))
-	else:
-		training_set=create_training_set()
 	print 'initializing new classifier...'
-	NBC=Classifier()
-	print 'training model...'
-	NBC.train_model(training_set)
-	print 'lets classify something: for example, the tweet "Obama sucks. #Nobama"'
-	print NBC.classify("Obama sucks. #Nobama. I hate him. Worst President ever. ")
+	nbc=Classifier()
+	print 'creating labeled set...'
+	if os.path.exists("emoticon_training_set.pkl"):
+		feature_sets=pickle.load(open('emoticon_training_set.pkl'))
+	else:
+		feature_sets=create_training_set()
+
+	nbc.n_fold_validation(feature_sets)
+	nbc.classifier.show_most_informative_features(5)
+	#nbc.n_fold_validation(feature_sets, classifier=MaxentClassifier)
+
+
 

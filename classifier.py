@@ -1,10 +1,10 @@
 import re
 from itertools import chain
-from nltk import word_tokenize, sent_tokenize
-import random
+from nltk import word_tokenize, sent_tokenize, classify
 from nltk.classify.util import apply_features
 from nltk.corpus import stopwords
-from nltk import NaiveBayesClassifier#, MaxentClassifer
+from nltk import NaiveBayesClassifier, MaxentClassifier
+import random
 # classifier shell for processing tweets
 
 emoticonre=re.compile(r'[;:B=]_?-?[)\(PpD\[\]{}]', re.UNICODE)
@@ -46,12 +46,11 @@ class Classifier:
 			features['contains(%s)' % feature]= feature in tokens
 		return features
 
-	def train_model(self, training_set):
-		random.shuffle(training_set)
+	def train_model(self, training_set, classifier=NaiveBayesClassifier):
 		feature_list=set(chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in training_set]))			
 		self.featurelist=[feature for feature in feature_list if feature not in self.stopwords]
 		ts=apply_features(self.extract_features, training_set)
-		self.classifier=NaiveBayesClassifier.train(ts)
+		self.classifier=classifier.train(ts)
 
 	def classify(self, text):
 		if self.classifier:
@@ -59,11 +58,25 @@ class Classifier:
 		else:
 			raise Exception('Classifier has not been trained!')
 
+	def n_fold_validation(self, training_set, classifier=NaiveBayesClassifier, n=10, seed=None):
+		if seed:
+			random.shuffle(training_set, seed)
+		else:
+			random.shuffle(training_set)
+		results=[]
+		for x in xrange(0, 10):
+			print "fold %d" % x
+			training_tweets=[tweet_tuple for i, tweet_tuple in enumerate(training_set) if i % n != x]
+			validation_tweets=[tweet_tuple for i, tweet_tuple in enumerate(training_set) if i % n == x]
+			self.train_model(training_set=training_tweets, classifier=classifier)
+			validation_set=[(self.extract_features(tweet), sentiment) for tweet, sentiment in validation_tweets]
+			acc=classify.accuracy(self.classifier, validation_set)
+			print "Accuracy: %s" % acc
+			results.append(acc)
+		mean=sum(results)/len(results)
+		print "Mean Accuracy: %s" % mean
+		return mean
+
+
 if __name__ == '__main__':
-	#read in training set
-	#with codecs.open(trainingsetfile_name, 'r', encoding='utf-8') as trainingsetfile:
-		#training_set=[tuple(line[0], line[1]) for line in trainingsetfile]
-	#NBC=Classifier()
-	#NBC.train_model(training_set)
-	#print NBC.classify("Obama sucks. #Nobama")
 	pass
