@@ -35,7 +35,7 @@ if __name__ == '__main__':
 		feature_sets=create_training_set()
 
 	nbc.n_fold_validation(feature_sets)
-	nbc.classifier.show_most_informative_features(5)
+	#nbc.classifier.show_most_informative_features(5)
 	#nbc.n_fold_validation(feature_sets, classifier=MaxentClassifier)
 
 
