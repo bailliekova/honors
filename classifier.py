@@ -53,12 +53,19 @@ class Classifier:
 		self.classifier=classifier.train(ts)
 
 	def classify(self, text):
+		"""
+		Convenience method, calls self.classifier's classify method, raises an expection if self.classifier not initialized.
+		"""
 		if self.classifier:
 			return self.classifier.classify(self.extract_features(text))
 		else:
 			raise Exception('Classifier has not been trained!')
 
 	def n_fold_validation(self, training_set, classifier=NaiveBayesClassifier, n=10, seed=None):
+		"""
+		Performs an n-fold validation of the classifier, returning mean accuracy. 
+		Shuffles the trainingset, using option argument seed for replicability. 
+		"""
 		if seed:
 			random.shuffle(training_set, seed)
 		else:
