@@ -86,6 +86,6 @@ summaryfile_name=outfile_name.partition('.')[0]+'_daily.csv'
 with open(summaryfile_name, 'wb') as summaryfile:
   csvwriter=csv.writer(summaryfile, delimiter='\t')
   for date in sentiment_dict:
-    dailysent=1.0*sentiment_dict[date]['positive']/sentiment_dict[date]['negative']
+    dailysent=float(sentiment_dict[date]['positive'])/sentiment_dict[date]['negative']
     row=date, sentiment_dict[date]['positive'], sentiment_dict[date]['negative'], sentiment_dict[date]['neutral'], dailysent
     csvwriter.writerow(row)

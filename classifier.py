@@ -27,6 +27,9 @@ def process_tweet(tweet, exclude_emoticons=False):
 	return tweet
 
 class Classifier:
+	"""
+	Wrapper around nltk.classifier with methods for feature extraction. 
+	"""
 	def __init__(self, stopws=None):
 		if stopws is None:
 			self.stopwords=stopwords.words('english')
