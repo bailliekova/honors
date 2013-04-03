@@ -24,7 +24,7 @@ def create_training_set():
 		pickle.dump(trainingset, picklefile)
 	return trainingset
 
-
+def 
 if __name__ == '__main__':
 	print 'initializing new classifier...'
 	nbc=Classifier()
@@ -34,7 +34,35 @@ if __name__ == '__main__':
 	else:
 		feature_sets=create_training_set()
 
-	nbc.n_fold_validation(feature_sets)
+	#nbc.n_fold_validation(feature_sets)
+	nbc.train_model(feature_sets)
+	sentiment_dict=defaultdict(lambda: defaultdict(int))
+	with codecs.open('data\obamatweets.csv', 'r', encoding='utf-8') as infile:
+		for line in infile:
+			tokens=line.split('\t')
+			text=tokens[0]
+			try:
+	      		date=outrow[7]
+	    	except IndexError:
+	      		continue 
+			classification=nbc.classify(text)
+			print classification, text
+			sentiment_dict[date][classification]+=1
+
+	with open('data\emoticon_obama_daily.csv', 'w') as outfile:
+		outfile.write('\t'.join(['date', 'positive', 'negative', 'ratio\n']))
+		for date in sentiment_dict:
+			row=[sentiment_dict[date]['positive'], sentiment_dict[date]['negative'], 1.0* sentiment_dict[date]['positive']/sentiment_dict[date]['negative']] 
+			outfile.write('\t'.join([str(x) for x in row]))
+			outfile.write('\n')
+			outfile.flush()
+	
+
+
+
+
+
+
 	#nbc.classifier.show_most_informative_features(5)
 	#nbc.n_fold_validation(feature_sets, classifier=MaxentClassifier)
 
