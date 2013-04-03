@@ -2,7 +2,8 @@ import pandas as pd
 from pandas import DataFrame, Series
 from datetime import timedelta, datetime
 
-sentiment=pd.read_csv('C:\Users\Anna\Projects\honors\data\obamatweets_daily.csv', sep='\t', parse_dates=['date'])
+sentfile='C:\Users\Anna\Projects\honors\data\obamatweets_daily.csv'
+sentiment=pd.read_csv(sentfile, sep='\t', parse_dates=['date'])
 s=sentiment.set_index('date', drop=False)
 polls=pd.read_csv('C:\Users\Anna\Projects\honors\data\\favorable_data.csv', sep='\t', parse_dates=['enddate'])
 polls=polls.set_index('enddate', drop=False)
@@ -40,8 +41,8 @@ diffcorrs=[]
 lags=[]
 
 for x in xrange(-90, 90): 
-	data['lag']=data.sentiment.shift(-x)
-	lags.append(x)
+	data['lag']=data.sentiment.shift(x)
+	lags.append(x) 
 	favcorrs.append(data.corr()['lag']['fav'])
 	diffcorrs.append(data.corr()['lag']['difference'])
 	unfavcorrs.append(data.corr()['lag']['unfavorable'])

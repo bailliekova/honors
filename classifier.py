@@ -21,7 +21,7 @@ def process_tweet(tweet, exclude_emoticons=False):
 	hashre=re.compile(r'#([\S]+)', re.UNICODE)
 	tweet=hashre.sub(r'\1', tweet)
 	#remove punctuation
-	tweet=re.sub(r'[^\w\s]', '', tweet, re.UNICODE)
+	tweet=re.sub(r'[^\w\s]+', ' ', tweet, re.UNICODE)
 	if exclude_emoticons:
 		tweet=emoticonre.sub('', tweet)
 	return tweet
@@ -51,7 +51,7 @@ class Classifier:
 
 	def train_model(self, training_set, classifier=NaiveBayesClassifier):
 		feature_list=set(chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in training_set]))			
-		self.featurelist=[feature for feature in feature_list if feature not in self.stopwords]
+		self.feature_list=[feature for feature in feature_list if feature not in self.stopwords]
 		ts=apply_features(self.extract_features, training_set)
 		self.classifier=classifier.train(ts)
 
