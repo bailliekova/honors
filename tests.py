@@ -14,8 +14,8 @@ class PreprocessingTest(unittest.TestCase):
 
 	def test_process_tweets(self):
 		self.assertEqual(process_tweet(self.tweet), 'this is a tweet with a URL and USER and a hashtag')
-		self.assertEqual(process_tweet(self.tweet2), 'this tweet has a different url format URL')
-		self.assertEqual(process_tweet(self.tweet3), 'this tweet has yet another format for urls i love URL')
+		self.assertEqual(process_tweet(self.tweet2), 'this tweet has a different url format  URL')
+		self.assertEqual(process_tweet(self.tweet3), 'this tweet has yet another format for urls  i love URL')
 		self.assertEqual(process_tweet(self.tweet_up), 'this tweet is in uppercase')
 	
 	def test_regex(self):
@@ -37,7 +37,10 @@ class PreprocessingTest(unittest.TestCase):
 		self.assertTrue(c.stopwords)
 		
 	def test_extract_features(self):
-		raise Exception("Write this test case, loser!")
+		c=Classifier()
+		c.feature_list=['tweet', 'format']
+		fts=c.extract_features(self.tweet2)
+		self.assertEqual(fts, {'contains(tweet)': True, 'contains(format)': True })
 
 	def test_NaiveBayes(self):
 		raise Exception("Write this test case, loser!")

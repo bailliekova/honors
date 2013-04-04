@@ -38,7 +38,7 @@ if __name__ == '__main__':
 	nbc.n_fold_validation(feature_sets)
 	"training model..."
 	nbc.train_model(feature_sets)
-	print "showing most infomrmative features..."
+	print "showing most informative features..."
 	nbc.classifier.show_most_informative_features()
 	sentiment_dict=defaultdict(lambda: defaultdict(int))
 	print 'classifying obamatweets.csv...'
