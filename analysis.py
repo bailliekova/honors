@@ -30,9 +30,7 @@ ma_unfav=moving_average(polls.unfavorable, 3)
 ma_other=moving_average(polls.other, 3)
 
 #join er'ry thing together
-keys=['favorable', 'unfavorable', 'other', 'difference','positive', 'negative', 'neutral', 'sentiment']
-data=pd.concat([ma_fav, ma_unfav, ma_other, ma_fav-ma_unfav, s.positive, s.negative, s.neutral], keys=keys)
-print data.head()
+data=DataFrame({'favorable': ma_fav, 'unfavorable': ma_unfav, 'other': ma_other,'difference': ma_fav-ma_unfav, 'positive': s.positive, 'negative': s.negative, 'neutral': s.neutral, 'sentiment': s.sentiment})
 
 #try different lags
 favcorrs=[]
@@ -43,7 +41,7 @@ lags=[]
 for x in xrange(-90, 90): 
 	data['lag']=data.sentiment.shift(x)
 	lags.append(x) 
-	favcorrs.append(data.corr()['lag']['fav'])
+	favcorrs.append(data.corr()['lag']['favorable'])
 	diffcorrs.append(data.corr()['lag']['difference'])
 	unfavcorrs.append(data.corr()['lag']['unfavorable'])
 

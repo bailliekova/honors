@@ -34,8 +34,8 @@ if __name__ == '__main__':
 	else:
 		feature_sets=create_training_set()
 
-	"n fold validation..."
-	nbc.n_fold_validation(feature_sets)
+	#"n fold validation..."
+	#nbc.n_fold_validation(feature_sets, seed=)
 	"training model..."
 	nbc.train_model(feature_sets)
 	print "showing most informative features..."
@@ -45,6 +45,10 @@ if __name__ == '__main__':
 
 	with codecs.open('data\obamatweets.csv', 'r', encoding='utf-8') as infile:
 		for line in infile:
+			try:
+				print line
+			except:
+				pass
 			tokens=line.split('\t')
 			text=tokens[0]
 			try:

@@ -41,9 +41,8 @@ class Classifier:
 	
 	def extract_features(self, text):
 		preprocessed=process_tweet(text)
-		#word tokenize by sentences, then by word
 		sents=sent_tokenize(preprocessed)
-		wordlists=[word_tokenize(s) for s in sents]
+		wordlist=[word_tokenize(s) for s in sents]
 		tokens=[word for wordlist in wordlists for word in wordlist if word not in self.stopwords]
 		features=dict()
 		for feature in self.feature_list:
@@ -52,6 +51,7 @@ class Classifier:
 
 	def train_model(self, training_set, classifier=NaiveBayesClassifier):
 		feature_list=set(chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in training_set]))			
+		#self.feature_list=[word for wordlist in wordlists for word in wordlist if word not in self.stopwords]
 		self.feature_list=[feature for feature in feature_list if feature not in self.stopwords]
 		ts=[(self.extract_features(tweet), label) for tweet, label in training_set]
 		#ts=apply_features(self.extract_features, training_set)

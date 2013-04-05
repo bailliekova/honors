@@ -3,7 +3,7 @@
 *.pyc
 *.Rdata
 *.Rhistory
+*.ipynb
 RGraphic.pdf
-*.pkl
 Schema.ini*
 hist*
