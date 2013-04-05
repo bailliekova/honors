@@ -26,20 +26,26 @@ def create_training_set():
 	return trainingset
 
 if __name__ == '__main__':
-	print 'initializing new classifier...'
-	nbc=Classifier()
-	print 'creating labeled set...'
-	if os.path.exists("undersampled_emoticon.pkl"):
-		feature_sets=pickle.load(open('undersampled_emoticon.pkl'))
-	else:
-		feature_sets=create_training_set()
 
-	#"n fold validation..."
+	if os.path.exists("emoticon_nb_classifier.pkl"):
+		nbc=pickle.load(open('emoticon_nb_classifier.pkl', 'rb'))
+	else:
+		print 'initializing new classifier...'
+		nbc=Classifier()
+		print 'creating labeled set...'
+		if os.path.exists("undersampled_emoticon.pkl"):
+			feature_sets=pickle.load(open('undersampled_emoticon.pkl'))
+		else:
+			feature_sets=create_training_set()
+		"training model..."
+		nbc.train_model(feature_sets)
+		with open('emoticon_nb_classifier.pkl', 'rb') as picklefile:
+			pickle.dump(nbc, picklefile)
+			
+	#print "n fold validation..."
 	#nbc.n_fold_validation(feature_sets, seed=)
-	"training model..."
-	nbc.train_model(feature_sets)
-	print "showing most informative features..."
-	nbc.classifier.show_most_informative_features()
+	#print "showing most informative features..."
+	#nbc.classifier.show_most_informative_features()
 	sentiment_dict=defaultdict(lambda: defaultdict(int))
 	print 'classifying obamatweets.csv...'
 
@@ -58,8 +64,8 @@ if __name__ == '__main__':
 			classification=nbc.classify(text)
 			#print classification
 			sentiment_dict[date][classification]+=1
-	#with open('emoticon_sentiment.pkl', 'wb') as picklefile:
-		#pickle.dump(sentiment_dict, picklefile)
+	with open('emoticon_sentiment.pkl', 'wb') as picklefile:
+		pickle.dump(sentiment_dict, picklefile)
 
 	print 'aggregating into daily statistics...'
 	with open('data\emoticon_obama_daily.csv', 'w') as outfile:
