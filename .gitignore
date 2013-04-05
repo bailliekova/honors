@@ -4,6 +4,7 @@
 *.Rdata
 *.Rhistory
 *.ipynb
+*~
 RGraphic.pdf
 Schema.ini*
 hist*

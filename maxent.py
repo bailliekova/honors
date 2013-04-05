@@ -3,6 +3,7 @@ from nltk import MaxentClassifier, sent_tokenize, word_tokenize
 from itertools import chain
 from collections import Counter, defaultdict
 import cPickle as pickle
+import codecs
 
 def main():
 	me=Classifier()
@@ -19,9 +20,12 @@ def main():
 
 
 if __name__ == '__main__':
-	me=main()
-	with open('emoticon_me_classifier.pkl', 'rb') as picklefile: 
-		pickle.dump(me, picklefile)
+	if os.path.exists('emoticon_me_classifier.pkl'):
+		me=pickle.load(open('emoticon_me_classifier.pkl', 'rb'))
+	else:
+		me=main()
+		with open('emoticon_me_classifier.pkl', 'wb') as picklefile: 
+			pickle.dump(me, picklefile)
 	
 	sentiment_dict=defaultdict(lambda: defaultdict(int))
 	print 'classifying obamatweets.csv...'
