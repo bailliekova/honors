@@ -12,10 +12,10 @@ if __name__=='__main__':
 	
 	reference=defaultdict(set)
 	observed=defaultdict(set)
-	for (tweetid, tweet, label) in validation_set:
-		reference[label].add(tweetid)
+	for i, (tweet, label) in enumerate(validation_set):
+		reference[label].add(i)
 		observation=classifier.classify(tweet)
-		observed[observation].add(tweetid)
+		observed[observation].add(i)
 	
 	print "accuracy: %s" % accuracy(observed, reference)
 	print "pos precision: %s" % precision(reference['positive'], observed['positive'])
