@@ -1,4 +1,3 @@
-#
 from classifier import Classifier, process_tweet
 from nltk import MaxentClassifier, sent_tokenize, word_tokenize
 from itertools import chain
@@ -7,10 +6,11 @@ import cPickle as pickle
 def main():
 	me=Classifier()
 	feature_set=pickle.load(open('undersampled_emoticon.pkl', 'rb'))
-	feature_list=chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in feature_set])
+	feature_list=set(chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in feature_set]))
 	me.feature_list=list(feature_list)
 	ts=[(me.extract_features(tweet), label) for tweet, label in feature_set]
-	me.classifier=MaxentClassifier.train(ts, algorithm='CG')
+	print 'training Maxent, algorithm CG'
+	me.classifier=MaxentClassifier.train(ts)
 	return me
 
 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
 	me=main()
 	sentiment_dict=defaultdict(lambda: defaultdict(int))
 	print 'classifying obamatweets.csv...'
-
+	outfile=codecs.open('data/emoticon_maxent_coded.csv', 'w')
 	with codecs.open('data\obamatweets.csv', 'r', encoding='utf-8') as infile:
 		for line in infile:
 			try:
@@ -32,10 +32,12 @@ if __name__ == '__main__':
 			except IndexError:
 				continue
 			classification=me.classify(text)
+			outfile.write('\t'.join([tokens[1], classification, '\n']))
+			outfile.flush()
 			#print classification
 			sentiment_dict[date][classification]+=1
-	#with open('emoticon_sentiment.pkl', 'wb') as picklefile:
-		#pickle.dump(sentiment_dict, picklefile)
+	with open('emoticon_sentiment_me.pkl', 'wb') as picklefile:
+		pickle.dump(sentiment_dict, picklefile)
 
 	print 'aggregating into daily statistics...'
 	with open('data\emoticon_obama_daily_me.csv', 'w') as outfile:
