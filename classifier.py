@@ -42,8 +42,8 @@ class Classifier:
 	def extract_features(self, text):
 		preprocessed=process_tweet(text)
 		sents=sent_tokenize(preprocessed)
-		wordlist=[word_tokenize(s) for s in sents]
-		tokens=[word for wordlist in wordlists for word in wordlist if word not in self.stopwords]
+		wordlists=[word_tokenize(s) for s in sents]
+		tokens=set([word for wordlist in wordlists for word in wordlist if word not in self.stopwords])
 		features=dict()
 		for feature in self.feature_list:
 			features['contains(%s)' % feature]= feature in tokens
