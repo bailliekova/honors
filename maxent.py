@@ -1,13 +1,17 @@
 from classifier import Classifier, process_tweet
 from nltk import MaxentClassifier, sent_tokenize, word_tokenize
 from itertools import chain
+from collections import Counter
 import cPickle as pickle
 
 def main():
 	me=Classifier()
+	feature_counter=Counter()
 	feature_set=pickle.load(open('undersampled_emoticon.pkl', 'rb'))
-	feature_list=set(chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in feature_set]))
-	me.feature_list=list(feature_list)
+	feature_list=chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in feature_set])
+	for feat in feature_list:
+		feature_counter[feat]+=1
+	me.feature_list=[feat for feat, count in feature_counter.most_common(1000)]
 	ts=[(me.extract_features(tweet), label) for tweet, label in feature_set]
 	print 'training Maxent, algorithm CG'
 	me.classifier=MaxentClassifier.train(ts)
