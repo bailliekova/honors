@@ -39,7 +39,7 @@ if __name__ == '__main__':
 			feature_sets=create_training_set()
 		"training model..."
 		nbc.train_model(feature_sets)
-		with open('emoticon_nb_classifier.pkl', 'rb') as picklefile:
+		with open('emoticon_nb_classifier.pkl', 'wb') as picklefile:
 			pickle.dump(nbc, picklefile)
 			
 	#print "n fold validation..."
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 				ratio=1.0*sentiment_dict[date]['positive']/sentiment_dict[date]['negative']
 			except:
 				ratio=None
-			row=[pos, neg, ratio] 
+			row=[date, pos, neg, ratio] 
 			outfile.write('\t'.join([str(x) for x in row]))
 			outfile.write('\n')
 			outfile.flush()
