@@ -39,7 +39,7 @@ if __name__ == '__main__':
 			feature_sets=create_training_set()
 		"training model..."
 		nbc.train_model(feature_sets)
-		with open('emoticon_nb_classifier.pkl', 'wb') as picklefile:
+		with open('emoticon_nb_classifier.pkl', 'rb') as picklefile:
 			pickle.dump(nbc, picklefile)
 			
 	#print "n fold validation..."
