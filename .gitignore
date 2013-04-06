@@ -1,5 +1,4 @@
 *.gz
-*.csv
 *.pyc
 *.Rdata
 *.Rhistory
