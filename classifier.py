@@ -85,6 +85,7 @@ class Classifier:
 			validation_set=[(self.extract_features(tweet), sentiment) for tweet, sentiment in validation_tweets]
 			acc=classify.accuracy(self.classifier, validation_set)
 			print "Accuracy: %s" % acc
+			self.validate(validation_tweets)
 			results.append(acc)
 		mean=sum(results)/len(results)
 		print "Mean Accuracy: %s" % mean
@@ -96,14 +97,14 @@ class Classifier:
 		reference=defaultdict(set)
 		observed=defaultdict(set)
 		observed['neutral']=set()
-		
+
 		for i, (tweet, label) in enumerate(validation_set):
 			reference[label].add(i)
 			observation=self.classify(tweet)
 			observed[observation].add(i)
 
-		print "accuracy: %s" % accuracy(observed, reference)
-		print "pos precision: %s" % precision(reference['positive'], observed['positive'])
+		print "accuracy: %s" % accuracy(reference, observed)
+		print "pos precision: %s" % precision(reference['positive'],observed['positive'])
 		print "pos recall: %s" % recall(reference['positive'], observed['positive'])
 		print "pos f-measure: %s" % f_measure(reference['positive'], observed['positive'])
 		print "neg precision: %s" % precision(reference['negative'], observed['negative'])
