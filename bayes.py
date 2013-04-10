@@ -25,15 +25,15 @@ if __name__ == '__main__':
 
 	nbc.train_model(feature_sets)
 
-	if parser.mode=='v':
+	if args.mode=='v':
 		print 'validating model'
 		validation_set=pickle.load(open(args.validation_set, 'rb'))
 		print 'validating against Turk data'
 		nbc.validate(validation_set)
 		print 'n-fold cross validation'
-		nbc.n_fold_validation()
+		nbc.n_fold_validation(args.trainingset)
 
-	if parser.mode=='c':
+	if args.mode=='c':
 		sentiment_dict=defaultdict(lambda: defaultdict(int))
 		print 'classifying obamatweets.csv...'
 		with codecs.open(os.path.join('data', args.infile), 'r', encoding='utf-8') as infile:
