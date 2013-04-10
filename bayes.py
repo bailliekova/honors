@@ -14,20 +14,20 @@ if __name__ == '__main__':
 	parser.add_argument('--infile', '-i', default='obamatweets.csv')
 	parser.add_argument('--outfile', '-o', default='emoticon_obama_daily.csv')
 	parser.add_argument('--validation_set', '-v', default='validation_set_categorical.pkl')
-	parser.add_argument('--classifier', '-c', choice='nsm', default='n')
-	parser.add_argument('--mode', '-m', choice='cv', default='v')
-	parser.parse_args()
+	parser.add_argument('--classifier', '-c', choices=['nb','svm', 'me'], default='nb')
+	parser.add_argument('--mode', '-m', choices=['c','v'], default='v')
+	args=parser.parse_args()
 
 	print 'initializing new classifier...'
 	nbc=Classifier()
-	feature_sets=pickle.load(open(parser.trainingset, 'rb'))
+	feature_sets=pickle.load(open(args.trainingset, 'rb'))
 	print "training model"
 
 	nbc.train_model(feature_sets)
 
 	if parser.mode=='v':
 		print 'validating model'
-		validation_set=pickle.load(open(parser.validation_set, 'rb'))
+		validation_set=pickle.load(open(args.validation_set, 'rb'))
 		print 'validating against Turk data'
 		nbc.validate(validation_set)
 		print 'n-fold cross validation'
@@ -36,7 +36,7 @@ if __name__ == '__main__':
 	if parser.mode=='c':
 		sentiment_dict=defaultdict(lambda: defaultdict(int))
 		print 'classifying obamatweets.csv...'
-		with codecs.open(os.path.join('data', parser.infile), 'r', encoding='utf-8') as infile:
+		with codecs.open(os.path.join('data', args.infile), 'r', encoding='utf-8') as infile:
 			for line in infile:
 				try:
 					print line
@@ -52,7 +52,7 @@ if __name__ == '__main__':
 				sentiment_dict[date][classification]+=1
 		
 		print 'writing to file...'
-		with open(os.path.join('data', parser.outfile), 'w') as outfile:
+		with open(os.path.join('data', args.outfile), 'w') as outfile:
 			outfile.write('\t'.join(['date', 'positive', 'negative', 'ratio\n']))
 			for date in sentiment_dict:
 				pos=sentiment_dict[date]['positive']
