@@ -30,15 +30,15 @@ def process_tweet(tweet, exclude_emoticons=False):
 def recode_turk(turk_set, include_neutral=False):
 	validation_set=[]
 	for tweet, rating in turk_set:
-    	if float(rating)>0:
-        	validation_set.append((tweet, 'positive'))
-    	elif float(rating)<0:
-        	validation_set.append((tweet, 'negative'))
-    	elif include_neutral:
-        	validation_set.append((tweet, 'neutral'))
-        else:
-        	pass
-        return validation_set
+		if float(rating)>0:
+			validation_set.append((tweet, 'positive'))
+		elif float(rating)<0:
+			validation_set.append((tweet, 'negative'))
+		elif include_neutral:
+			validation_set.append((tweet, 'neutral'))
+		else:
+			pass
+		return validation_set
 
 class Classifier:
 	"""
