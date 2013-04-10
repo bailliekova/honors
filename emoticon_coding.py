@@ -27,21 +27,27 @@ def create_training_set():
 
 if __name__ == '__main__':
 
-	if os.path.exists("emoticon_nb_classifier.pkl"):
-		nbc=pickle.load(open('emoticon_nb_classifier.pkl', 'rb'))
+	print 'initializing new classifier...'
+	nbc=Classifier()
+	print 'creating labeled set...'
+	if os.path.exists("undersampled_emoticon.pkl"):
+		feature_sets=pickle.load(open('undersampled_emoticon.pkl'))
 	else:
-		print 'initializing new classifier...'
-		nbc=Classifier()
-		print 'creating labeled set...'
-		if os.path.exists("undersampled_emoticon.pkl"):
-			feature_sets=pickle.load(open('undersampled_emoticon.pkl'))
-		else:
-			feature_sets=create_training_set()
-		"training model..."
-		nbc.train_model(feature_sets)
-		with open('emoticon_nb_classifier.pkl', 'wb') as picklefile:
-			pickle.dump(nbc, picklefile)
-			
+		feature_sets=create_training_set()
+	"training model..."
+	nbc.train_model(feature_sets)
+	turk_set=pickle.load(open('validation_set.pkl', 'rb'))
+	validation_set=[]
+	for tweet, rating in turk_set:
+    	if float(rating)>0:
+        	validation_set.append((tweet, 'positive'))
+    	elif float(rating)<0:
+        	validation_set.append((tweet, 'negative'))
+    	else:
+        	pass
+	
+	nbc.validate(validation_set)
+"""	
 	#print "n fold validation..."
 	#nbc.n_fold_validation(feature_sets, seed=)
 	#print "showing most informative features..."
@@ -85,3 +91,4 @@ if __name__ == '__main__':
 	#nbc.classifier.show_most_informative_features(5)
 	#nbc.n_fold_validation(feature_sets, classifier=MaxentClassifier)
 
+"""

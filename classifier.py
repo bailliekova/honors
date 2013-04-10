@@ -1,10 +1,11 @@
 import re
 from itertools import chain
-from nltk import word_tokenize, sent_tokenize, classify
+from nltk import word_tokenize, sent_tokenize, classify, NaiveBayesClassifier, MaxentClassifier
 from nltk.classify.util import apply_features
 from nltk.corpus import stopwords
-from nltk import NaiveBayesClassifier, MaxentClassifier
+from nltk.metrics import accuracy, ConfusionMatrix, precision, recall, f_measure
 import random
+from collections import defaultdict
 # classifier shell for processing tweets
 
 emoticonre=re.compile(r'[;:B=]_?-?[)\(PpD\[\]{}]', re.UNICODE)
@@ -25,6 +26,19 @@ def process_tweet(tweet, exclude_emoticons=False):
 	if exclude_emoticons:
 		tweet=emoticonre.sub('', tweet)
 	return tweet
+
+def recode_turk(turk_set, include_neutral=False):
+	validation_set=[]
+	for tweet, rating in turk_set:
+		if float(rating)>0:
+			validation_set.append((tweet, 'positive'))
+		elif float(rating)<0:
+			validation_set.append((tweet, 'negative'))
+		elif include_neutral:
+			validation_set.append((tweet, 'neutral'))
+		else:
+			pass
+		return validation_set
 
 class Classifier:
 	"""
@@ -84,11 +98,31 @@ class Classifier:
 			validation_set=[(self.extract_features(tweet), sentiment) for tweet, sentiment in validation_tweets]
 			acc=classify.accuracy(self.classifier, validation_set)
 			print "Accuracy: %s" % acc
+			self.validate(validation_tweets)
 			results.append(acc)
 		mean=sum(results)/len(results)
 		print "Mean Accuracy: %s" % mean
 		return mean
 
+	def validate(self, validation_set):
+		if self.classifier is None:
+			raise Exception("self.classifier is None")
+		reference=defaultdict(set)
+		observed=defaultdict(set)
+		observed['neutral']=set()
+
+		for i, (tweet, label) in enumerate(validation_set):
+			reference[label].add(i)
+			observation=self.classify(tweet)
+			observed[observation].add(i)
+		
+		print "accuracy: %s" % accuracy(reference, observed)
+		print "pos precision: %s" % precision(reference['positive'],observed['positive'])
+		print "pos recall: %s" % recall(reference['positive'], observed['positive'])
+		print "pos f-measure: %s" % f_measure(reference['positive'], observed['positive'])
+		print "neg precision: %s" % precision(reference['negative'], observed['negative'])
+		print "neg recall: %s" % recall(reference['negative'], observed['negative'])
+		print "neg f-measure: %s" % f_measure(reference['negative'], observed['negative'])
 
 if __name__ == '__main__':
 	pass
