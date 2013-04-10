@@ -47,9 +47,11 @@ if __name__ == '__main__':
 	#print "showing most informative features..."
 	#nbc.classifier.show_most_informative_features()
 	sentiment_dict=defaultdict(lambda: defaultdict(int))
+	infile='data/obamatweets.csv'
+	#infile='data/toy.csv'
 	print 'classifying obamatweets.csv...'
 
-	with codecs.open('data\obamatweets.csv', 'r', encoding='utf-8') as infile:
+	with codecs.open(infile, 'r', encoding='utf-8') as infile:
 		for line in infile:
 			try:
 				print line
@@ -62,13 +64,11 @@ if __name__ == '__main__':
 			except IndexError:
 				continue
 			classification=nbc.classify(text)
-			#print classification
 			sentiment_dict[date][classification]+=1
-	with open('emoticon_sentiment.pkl', 'wb') as picklefile:
-		pickle.dump(sentiment_dict, picklefile)
+
 
 	print 'aggregating into daily statistics...'
-	with open('data\emoticon_obama_daily.csv', 'w') as outfile:
+	with open('data/emoticon_obama_daily.csv', 'w') as outfile:
 		outfile.write('\t'.join(['date', 'positive', 'negative', 'ratio\n']))
 		for date in sentiment_dict:
 			pos=sentiment_dict[date]['positive']
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 				ratio=1.0*sentiment_dict[date]['positive']/sentiment_dict[date]['negative']
 			except:
 				ratio=None
-			row=[date, pos, neg, ratio] 
+			row=[date, pos, neg, ratio]
 			outfile.write('\t'.join([str(x) for x in row]))
 			outfile.write('\n')
 			outfile.flush()
