@@ -27,6 +27,19 @@ def process_tweet(tweet, exclude_emoticons=False):
 		tweet=emoticonre.sub('', tweet)
 	return tweet
 
+def recode_turk(turk_set, include_neutral=False):
+	validation_set=[]
+	for tweet, rating in turk_set:
+    	if float(rating)>0:
+        	validation_set.append((tweet, 'positive'))
+    	elif float(rating)<0:
+        	validation_set.append((tweet, 'negative'))
+    	elif include_neutral:
+        	validation_set.append((tweet, 'neutral'))
+        else:
+        	pass
+        return validation_set
+
 class Classifier:
 	"""
 	Wrapper around nltk.classifier with methods for feature extraction. 
@@ -102,7 +115,7 @@ class Classifier:
 			reference[label].add(i)
 			observation=self.classify(tweet)
 			observed[observation].add(i)
-
+		
 		print "accuracy: %s" % accuracy(reference, observed)
 		print "pos precision: %s" % precision(reference['positive'],observed['positive'])
 		print "pos recall: %s" % recall(reference['positive'], observed['positive'])
