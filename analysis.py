@@ -1,8 +1,9 @@
 import pandas as pd
 from pandas import DataFrame, Series
 from datetime import timedelta, datetime
+import sys, os
 
-sentfile='C:\Users\Anna\Projects\honors\data\obamatweets_daily.csv'
+sentfile='C:\Users\Anna\Projects\honors\data\\' + sys.argv[1]
 sentiment=pd.read_csv(sentfile, sep='\t', parse_dates=['date'])
 s=sentiment.set_index('date', drop=False)
 polls=pd.read_csv('C:\Users\Anna\Projects\honors\data\\favorable_data.csv', sep='\t', parse_dates=['enddate'])
@@ -11,8 +12,7 @@ polls=polls.set_index('enddate', drop=False)
 #functions for computing time based moving-average
 def daily_estimate(ts, ctr, win):
 	win=timedelta(win/2)
-	ser=ts[(ts.index>=ctr-win) & (ts.index<=ctr+win)]
-	print ser	
+	ser=ts[(ts.index>=ctr-win) & (ts.index<=ctr+win)]	
 	return ser.mean()
 
 def moving_average(ts, win): 
@@ -30,7 +30,7 @@ ma_unfav=moving_average(polls.unfavorable, 3)
 ma_other=moving_average(polls.other, 3)
 
 #join er'ry thing together
-data=DataFrame({'favorable': ma_fav, 'unfavorable': ma_unfav, 'other': ma_other,'difference': ma_fav-ma_unfav, 'positive': s.positive, 'negative': s.negative, 'neutral': s.neutral, 'sentiment': s.sentiment})
+data=DataFrame({'favorable': ma_fav, 'unfavorable': ma_unfav, 'other': ma_other,'difference': ma_fav-ma_unfav, 'positive': s.positive, 'negative': s.negative, 'sentiment': s.sentiment})
 
 #try different lags
 favcorrs=[]

@@ -63,10 +63,12 @@ class Classifier:
 			features['contains(%s)' % feature]= feature in tokens
 		return features
 
-	def train_model(self, training_set, classifier=NaiveBayesClassifier):
-		feature_list=set(chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in training_set]))			
-		#self.feature_list=[word for wordlist in wordlists for word in wordlist if word not in self.stopwords]
-		self.feature_list=[feature for feature in feature_list if feature not in self.stopwords]
+	def train_model(self, training_set, classifier=NaiveBayesClassifier, feature_limit=2000):
+		feature_counter=Counter(chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in training_set]))
+		for word in self.stopwords:
+			del feature_counter[word]
+		self.feature_list=[feat for feat, count in feature_counter.most_common(feature_limit)]
+		#self.feature_list=[feature for feature in feature_list if feature not in self.stopwords]
 		ts=[(self.extract_features(tweet), label) for tweet, label in training_set]
 		#ts=apply_features(self.extract_features, training_set)
 		self.classifier=classifier.train(ts)

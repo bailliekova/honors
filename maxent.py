@@ -51,7 +51,7 @@ if __name__ == '__main__':
 		pickle.dump(sentiment_dict, picklefile)
 
 	print 'aggregating into daily statistics...'
-	with open('data\emoticon_obama_daily_me.csv', 'w') as outfile:
+	with open(os.path.join('data', 'emoticon_obama_daily_me.csv'), 'w') as outfile:
 		outfile.write('\t'.join(['date', 'positive', 'negative', 'ratio\n']))
 		for date in sentiment_dict:
 			pos=sentiment_dict[date]['positive']
