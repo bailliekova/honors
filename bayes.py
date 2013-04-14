@@ -37,7 +37,8 @@ if __name__ == '__main__':
 		sentiment_dict=defaultdict(lambda: defaultdict(int))
 		print 'classifying obamatweets.csv...'
 		with codecs.open(os.path.join('data', args.infile), 'r', encoding='utf-8') as infile:
-			for line in infile:
+			lines=infile.readlines()
+			for line in lines:
 				try:
 					print line
 				except:

@@ -31,7 +31,8 @@ if __name__ == '__main__':
 	print 'classifying obamatweets.csv...'
 	outfile=codecs.open('data\emoticon_maxent_coded.csv', 'w')
 	with codecs.open('data\obamatweets.csv', 'r', encoding='utf-8') as infile:
-		for line in infile:
+		lines=infile.readlines()
+		for line in lines:
 			try:
 				print line
 			except:
