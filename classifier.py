@@ -87,10 +87,10 @@ class Classifier:
 		Performs an n-fold validation of the classifier, returning mean accuracy. 
 		Shuffles the trainingset, using option argument seed for replicability. 
 		"""
-		if seed:
-			random.shuffle(training_set, seed)
-		else:
-			random.shuffle(training_set)
+		#if seed:
+		#	random.shuffle(training_set, seed)
+		#else:
+		#	random.shuffle(training_set)
 		results=[]
 		for x in xrange(0, 10):
 			print "fold %d" % x

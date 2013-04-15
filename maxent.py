@@ -12,7 +12,7 @@ def main():
 	feature_list=chain.from_iterable([word_tokenize(process_tweet(tweet)) for tweet, sentiment in feature_set])
 	for feat in feature_list:
 		feature_counter[feat]+=1
-	me.feature_list=[feat for feat, count in feature_counter.most_common(2000)]
+	me.feature_list=[feat for feat, count in feature_counter.most_common(500)]
 	ts=[(me.extract_features(tweet), label) for tweet, label in feature_set]
 	print 'training Maxent, algorithm CG %s' % datetime.datetime.now()
 	me.classifier=MaxentClassifier.train(ts)
@@ -49,8 +49,6 @@ if __name__ == '__main__':
 			outfile.flush()
 			#print classification
 			sentiment_dict[date][classification]+=1
-	with open('emoticon_sentiment_me.pkl', 'wb') as picklefile:
-		pickle.dump(sentiment_dict, picklefile)
 
 	print 'aggregating into daily statistics...  %s' % datetime.datetime.now()
 	with open(os.path.join('data', 'emoticon_obama_daily_me.csv'), 'w') as outfile:
@@ -62,7 +60,7 @@ if __name__ == '__main__':
 				ratio=1.0*sentiment_dict[date]['positive']/sentiment_dict[date]['negative']
 			except:
 				ratio=None
-			row=[pos, neg, ratio] 
+			row=[date, pos, neg, ratio] 
 			outfile.write('\t'.join([str(x) for x in row]))
 			outfile.write('\n')
 			outfile.flush()
