@@ -1,6 +1,6 @@
 #Bayesian classifier
 import codecs
-import sys, os, re, random
+import sys, os, re, random, datetime
 import cPickle as pickle
 from classifier import *
 from nltk import NaiveBayesClassifier, MaxentClassifier
@@ -21,9 +21,11 @@ if __name__ == '__main__':
 	print 'initializing new classifier...'
 	nbc=Classifier()
 	feature_sets=pickle.load(open(args.trainingset, 'rb'))
-	print "training model"
+	print "training model %s" % datetime.datetime.now()
 
 	nbc.train_model(feature_sets)
+	
+	print 'done training model at %s' % datetime.datetime.now()
 
 	if args.mode=='v':
 		print 'validating model'
@@ -52,7 +54,7 @@ if __name__ == '__main__':
 				classification=nbc.classify(text)
 				sentiment_dict[date][classification]+=1
 		
-		print 'writing to file...'
+		print 'writing to file... %s ' %  print datetime.datetime.now()
 		with open(os.path.join('data', args.outfile), 'w') as outfile:
 			outfile.write('\t'.join(['date', 'positive', 'negative', 'ratio\n']))
 			for date in sentiment_dict:

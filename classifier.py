@@ -5,7 +5,7 @@ from nltk.classify.util import apply_features
 from nltk.corpus import stopwords
 from nltk.metrics import accuracy, ConfusionMatrix, precision, recall, f_measure
 import random
-from collections import defaultdict
+from collections import defaultdict, Counter
 # classifier shell for processing tweets
 
 emoticonre=re.compile(r'[;:B=]_?-?[)\(PpD\[\]{}]', re.UNICODE)
