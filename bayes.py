@@ -42,7 +42,8 @@ if __name__ == '__main__':
 			lines=infile.readlines()
 			for line in lines:
 				try:
-					print line
+					#print line
+					pass
 				except:
 					pass
 				tokens=line.split('\t')
