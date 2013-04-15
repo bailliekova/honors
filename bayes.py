@@ -54,7 +54,7 @@ if __name__ == '__main__':
 				classification=nbc.classify(text)
 				sentiment_dict[date][classification]+=1
 		
-		print 'writing to file... %s ' %  print datetime.datetime.now()
+		print 'writing to file... %s ' % datetime.datetime.now()
 		with open(os.path.join('data', args.outfile), 'w') as outfile:
 			outfile.write('\t'.join(['date', 'positive', 'negative', 'ratio\n']))
 			for date in sentiment_dict:
