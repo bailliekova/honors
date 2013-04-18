@@ -3,9 +3,9 @@ from itertools import chain
 from nltk import word_tokenize, sent_tokenize, classify, NaiveBayesClassifier, MaxentClassifier
 from nltk.classify.util import apply_features
 from nltk.corpus import stopwords
-from nltk.metrics import accuracy, ConfusionMatrix, precision, recall, f_measure
+from nltk.metrics import ConfusionMatrix, precision, recall, f_measure
 import random
-from collections import defaultdict
+from collections import defaultdict, Counter
 # classifier shell for processing tweets
 
 emoticonre=re.compile(r'[;:B=]_?-?[)\(PpD\[\]{}]', re.UNICODE)
@@ -91,20 +91,29 @@ class Classifier:
 			random.shuffle(training_set, seed)
 		else:
 			random.shuffle(training_set)
-		results=[]
+		statistics=[]
+		# alist=[]
 		for x in xrange(0, 10):
 			print "fold %d" % x
 			training_tweets=[tweet_tuple for i, tweet_tuple in enumerate(training_set) if i % n != x]
 			validation_tweets=[tweet_tuple for i, tweet_tuple in enumerate(training_set) if i % n == x]
 			self.train_model(training_set=training_tweets, classifier=classifier)
-			validation_set=[(self.extract_features(tweet), sentiment) for tweet, sentiment in validation_tweets]
-			acc=classify.accuracy(self.classifier, validation_set)
-			print "Accuracy: %s" % acc
-			self.validate(validation_tweets)
-			results.append(acc)
-		mean=sum(results)/len(results)
-		print "Mean Accuracy: %s" % mean
-		return mean
+			validation_set=[(self.extract_fea tures(tweet), sentiment) for tweet, sentiment in validation_tweets]
+			# a=classify.accuracy(self.classifier, validation_set)
+			# print "Accuracy: %s" % a
+			# print type(a)
+			statistics.append(self.validate(validation_tweets))
+		# 	alist.append(a)
+		# print alist
+		# mean_acc=sum(alist)/len(alist)
+		# print "Mean Accuracy: %s" % mean_acc
+		print "Mean positive precision %s" % sum([stat[1] for stat in statistics])/len(statistics)
+		print "Mean positive recall %s" % sum([stat[2] for stat in statistics])/len(statistics)
+		print "Mean positive f-measure %s" % sum([stat[3] for stat in statistics])/len(statistics)
+		print "Mean negative precision %s" % sum([stat[4] for stat in statistics])/len(statistics)
+		print "Mean negative recall %s" % sum([stat[5] for stat in statistics])/len(statistics)
+		print "Mean negative f-measure %s" % sum([stat[6] for stat in statistics])/len(statistics)
+		return mean_acc
 
 	def validate(self, validation_set):
 		if self.classifier is None:
@@ -117,14 +126,22 @@ class Classifier:
 			reference[label].add(i)
 			observation=self.classify(tweet)
 			observed[observation].add(i)
+		acc=classify.accuracy(self.classifier, observed)
+		posp=precision(reference['positive'],observed['positive'])
+		posr=recall(reference['positive'], observed['positive'])
+		posf=f_measure(reference['positive'], observed['positive'])
+		negp=precision(reference['negative'],observed['negative'])
+		negr=recall(reference['negative'], observed['negative'])
+		negf=f_measure(reference['negative'], observed['negative'])
 		
-		print "accuracy: %s" % accuracy(reference, observed)
-		print "pos precision: %s" % precision(reference['positive'],observed['positive'])
-		print "pos recall: %s" % recall(reference['positive'], observed['positive'])
-		print "pos f-measure: %s" % f_measure(reference['positive'], observed['positive'])
-		print "neg precision: %s" % precision(reference['negative'], observed['negative'])
-		print "neg recall: %s" % recall(reference['negative'], observed['negative'])
-		print "neg f-measure: %s" % f_measure(reference['negative'], observed['negative'])
+		print "accuracy: %s" % acc
+		print "pos precision: %s" % posp
+		print "pos recall: %s" % posr
+		print "pos f-measure: %s" % posf
+		print "neg precision: %s" % negp
+		print "neg recall: %s" % negr
+		print "neg f-measure: %s" % negf
+		return (acc, posp, posr, posf, negp, negr, negf)
 
 if __name__ == '__main__':
 	pass

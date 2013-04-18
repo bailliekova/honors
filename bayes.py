@@ -4,7 +4,7 @@ import sys, os, re, random
 import cPickle as pickle
 from classifier import *
 from nltk import NaiveBayesClassifier, MaxentClassifier
-from collections import defaultdict
+from collections import defaultdict, Counter
 import argparse
 
 
@@ -26,12 +26,12 @@ if __name__ == '__main__':
 	nbc.train_model(feature_sets)
 
 	if args.mode=='v':
-		print 'validating model'
 		validation_set=pickle.load(open(args.validation_set, 'rb'))
+		training_set=pickle.load(open(args.validation_set, 'rb'))
 		print 'validating against Turk data'
 		nbc.validate(validation_set)
 		print 'n-fold cross validation'
-		nbc.n_fold_validation(args.trainingset)
+		nbc.n_fold_validation(training_set)
 
 	if args.mode=='c':
 		sentiment_dict=defaultdict(lambda: defaultdict(int))
