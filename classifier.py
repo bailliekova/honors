@@ -90,7 +90,7 @@ class Classifier:
 		if seed:
 			random.shuffle(training_set, seed)
 		else:
-			random.shuffle(training_set)
+			random.shuffle(  training_set)
 		statistics=[]
 		# alist=[]
 		for x in xrange(0, 10):

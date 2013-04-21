@@ -1,5 +1,5 @@
 from __future__ import print_function
-import argparse, random, codecs, os
+import argparse, random, codecs, os, re
 import numpy as np
 import cPickle as pickle
 from time import time
@@ -10,6 +10,25 @@ from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression 
 from sklearn import metrics 
 from sklearn.utils.extmath import density
+
+emoticonre=re.compile(r'[;:B=]_?-?[)\(PpD\[\]{}]', re.UNICODE)
+
+def process_tweet(tweet, exclude_emoticons=False):
+	tweet=tweet.lower()
+	#create regex for anything starting with a www or http(s) and ending at the next whitespace
+	urlre=re.compile(r'www\.[\S]+|https?://[\S]+', re.UNICODE)
+	tweet=urlre.sub('URL', tweet)
+	#replace @handles with the word "USER"
+	userre=re.compile(r'@([\S]+)', re.UNICODE)
+	tweet=userre.sub('USER', tweet)
+	#replace hashtags with the word that was in the hashtag
+	hashre=re.compile(r'#([\S]+)', re.UNICODE)
+	tweet=hashre.sub(r'\1', tweet)
+	#remove punctuation
+	tweet=re.sub(r'[^\w\s]+', ' ', tweet, re.UNICODE)
+	if exclude_emoticons:
+		tweet=emoticonre.sub('', tweet)
+	return tweet
 
 def split_set(labeled_set, n, shuffle=True, x=0):
 	if shuffle:
@@ -57,9 +76,9 @@ if __name__ == '__main__':
 	ts=[]
 	for tweet, label in training_set:
 		if label=='positive':
-			ts.append((tweet, 0))
+			ts.append((process_tweet(tweet), 0))
 		elif label=='negative':
-			ts.append((tweet, 1))
+			ts.append((process_tweet(tweet), 1))
 		# elif label=='neutral':
 		# 	ts.append((tweet,2))
 		else:
@@ -67,21 +86,22 @@ if __name__ == '__main__':
 
 
 	# n-fold validation
-	print("10-fold validation...")
-	nbresults=[]
-	svmresults=[]
-	meresults=[]
-	for x in xrange(0,10):
-		training_set, test_set=split_set(ts, n=10, x=x)
-		train_tweets, train_labels=zip(*training_set)
-		test_tweets, test_labels=zip(*test_set)
-		count_vect=CountVectorizer(charset_error=u'ignore', stop_words='english')
-		x_train=count_vect.fit_transform(train_tweets)
-		x_test=count_vect.transform(test_tweets)
-		categories=['positive', 'negative']	
-		nbresults.append(benchmark(BernoulliNB(), x_train, train_labels, x_test, test_labels))
-		svmresults.append(benchmark(LinearSVC(), x_train, train_labels, x_test, test_labels))
-		meresults.append(benchmark(LogisticRegression(), x_train, train_labels, x_test, test_labels))
+	if args.mode=='v':
+		print("10-fold validation...")
+		nbresults=[]
+		svmresults=[]
+		meresults=[]
+		for x in xrange(0,10):
+			training_set, test_set=split_set(ts, n=10, x=x)
+			train_tweets, train_labels=zip(*training_set)
+			test_tweets, test_labels=zip(*test_set)
+			count_vect=CountVectorizer(charset_error=u'ignore', stop_words='english')
+			x_train=count_vect.fit_transform(train_tweets)
+			x_test=count_vect.transform(test_tweets)
+			categories=['positive', 'negative']	
+			nbresults.append(benchmark(BernoulliNB(), x_train, train_labels, x_test, test_labels))
+			svmresults.append(benchmark(LinearSVC(), x_train, train_labels, x_test, test_labels))
+			meresults.append(benchmark(LogisticRegression(), x_train, train_labels, x_test, test_labels))
 
 	if args.mode=='c':
 		"classification...."
@@ -106,14 +126,17 @@ if __name__ == '__main__':
 				except IndexError:
 					continue
 				classification=clf.predict(c.transform(text))[0]
+				if classification==1:
+					print(text, classification)
 				sentiment_dict[date][classification]+=1
 		
 		print('writing to file...')
-		with open(os.path.join('data', args.outfile), 'w') as outfile:
+		outfile_name=args.classifier+'_'+args.training_set[:-4]+'.csv'
+		with open(os.path.join('data', outfile_name), 'w') as outfile:
 			outfile.write('\t'.join(['date', 'positive', 'negative', 'ratio\n']))
 			for date in sentiment_dict:
-				pos=sentiment_dict[date]['positive']
-				neg=sentiment_dict[date]['negative']
+				pos=sentiment_dict[date][0]
+				neg=sentiment_dict[date][1]
 				try:
 					ratio=1.0*sentiment_dict[date]['positive']/sentiment_dict[date]['negative']
 				except:
