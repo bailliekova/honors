@@ -1,4 +1,5 @@
 import pandas as pd
+import statsmodels as sm
 from pandas import DataFrame, Series
 from datetime import timedelta, datetime
 import sys, os
@@ -29,7 +30,7 @@ ma_fav=moving_average(polls.favorable, 5)
 ma_unfav=moving_average(polls.unfavorable, 5)
 ma_other=moving_average(polls.other, 5)
 
-#join er'ry thing together
+#join er'ry thing together, apply different smoothing to sentiment. 
 lglist=[]
 for k in [7, 15, 30]:
 	ma_sent=moving_average(s.sentiment, k)
