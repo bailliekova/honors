@@ -117,19 +117,14 @@ if __name__ == '__main__':
 		clf.fit(x_final, y_final)
 		sentiment_dict=defaultdict(lambda: defaultdict(int))
 		print('classifying obamatweets.csv...')
-		with codecs.open(os.path.join('data', 'obamatweets.csv'), 'r', encoding='utf-8') as infile:
-			for line in infile:
-				tokens=line.split('\t')
-				text=tokens[0]
-				try:
-					date=tokens[7]
-				except IndexError:
-					continue
-				classification=clf.predict(c.transform(text))[0]
-				if classification==1:
-					print(text, classification)
-				sentiment_dict[date][classification]+=1
-		
+
+		with codecs.open(os.path.join('data', args.infile), 'r', encoding='utf-8') as infile:
+			tweets, dates=zip(*[(line.split('\t')[0], line.split('\t')[7]) for line in infile if len(line.split('\t'))>7])
+		labels=clf.predict(c.transform(tweets))
+		print(set(labels))
+		for x in xrange(0, len(labels)):
+			sentiment_dict[dates[x]][labels[x]]+=1
+
 		print('writing to file...')
 		outfile_name=args.classifier+'_'+args.training_set[:-4]+'.csv'
 		with open(os.path.join('data', outfile_name), 'w') as outfile:
@@ -138,7 +133,7 @@ if __name__ == '__main__':
 				pos=sentiment_dict[date][0]
 				neg=sentiment_dict[date][1]
 				try:
-					ratio=1.0*sentiment_dict[date]['positive']/sentiment_dict[date]['negative']
+					ratio=1.0*pos/neg
 				except:
 					ratio=None
 				row=[date, pos, neg, ratio] 
