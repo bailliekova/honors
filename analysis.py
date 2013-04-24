@@ -1,5 +1,5 @@
 import pandas as pd
-import statsmodels as sm
+import statsmodels.api as sm
 from pandas import DataFrame, Series
 from datetime import timedelta, datetime
 import sys, os
@@ -60,3 +60,6 @@ for k in [7, 15, 30]:
 sm7_laggedcorrs=lglist[0]
 sm15_laggedcorrs=lglist[1]
 sm30_laggedcorrs=lglist[2]
+
+y=data.ma_sent.dropna()
+armodel=sm.tsa.ar_model.AR().fit(y)
