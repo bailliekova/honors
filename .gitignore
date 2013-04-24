@@ -4,6 +4,10 @@
 *.Rhistory
 *.ipynb
 *~
-RGraphic.pdf
 Schema.ini*
 hist*
+
+#images
+*.png
+*.jpg
+*.tff
