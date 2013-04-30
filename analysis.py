@@ -9,7 +9,10 @@ sentiment=pd.read_csv(sentfile, sep='\t', parse_dates=['date'])
 s=sentiment.set_index('date', drop=False)
 polls=pd.read_csv('C:\Users\Anna\Projects\honors\data\\favorable_data.csv', sep='\t', parse_dates=['enddate'])
 polls=polls.set_index('enddate', drop=False)
-
+vote=pd.read_csv('C:\Users\Anna\Projects\honors\data\\vote_data.csv', sep='\t', parse_dates=['enddate'])
+vote=vote.set_index('enddate', drop=False)
+approval=pd.read_csv('C:\Users\Anna\Projects\honors\data\\approval_data.csv', sep='\t', parse_dates=['enddate'])
+approval=approval.set_index('enddate', drop=False)
 #functions for computing time based moving-average
 def daily_estimate(ts, ctr, win):
 	win=timedelta(win/2)
@@ -29,6 +32,9 @@ def moving_average(ts, win):
 ma_fav=moving_average(polls.favorable, 5)
 ma_unfav=moving_average(polls.unfavorable, 5)
 ma_other=moving_average(polls.other, 5)
+ma_ovote=moving_average(vote.obama,5)
+ma_rvote=moving_average(vote.romney,5)
+ma_oapprov=moving_average(approval.approve, 5)
 
 #join er'ry thing together, apply different smoothing to sentiment. 
 lglist=[]
