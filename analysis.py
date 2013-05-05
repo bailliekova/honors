@@ -35,17 +35,27 @@ ma_other=moving_average(polls.other, 5)
 ma_ovote=moving_average(vote.obama,5)
 ma_rvote=moving_average(vote.romney,5)
 ma_oapprov=moving_average(approval.approve, 5)
+ma_disapprov=moving_average(approval.disapprove, 5)
 
 #join er'ry thing together, apply different smoothing to sentiment. 
 lglist=[]
 for k in [7, 15, 30]:
 	ma_sent=moving_average(s.sentiment, k)
-	data=DataFrame({'favorable': ma_fav, 'unfavorable': ma_unfav, 'other': ma_other,'difference': ma_fav-ma_unfav, 'positive': s.positive, 'negative': s.negative, 'sentiment': s.sentiment, 'ma_sentiment': ma_sent})
+	data=DataFrame({'favorable': ma_fav, 'unfavorable': ma_unfav, 'other': ma_other,'difference': ma_fav-ma_unfav, 
+					'positive': s.positive, 'negative': s.negative, 'sentiment': s.sentiment, 'ma_sentiment': ma_sent,
+					'ovote': ma_ovote, 'rvote': ma_rvote, 'votediff': ma_ovote-ma_rvote, 
+					'approval': ma_oapprov, 'disapprove': ma_disapprov, 'appdiff': ma_oapprov - ma_disapprov})
 
 	#try different lags
 	favcorrs=[]
 	unfavcorrs=[]
 	diffcorrs=[]
+	approvcorrs=[]
+	disappcorrs=[]
+	appdiffcorrs=[]
+	ovotecorrs=[]
+	rvotecorrs=[]
+	votediffcorrs=[]
 	lags=[]
 
 	for x in xrange(-90, 90): 
